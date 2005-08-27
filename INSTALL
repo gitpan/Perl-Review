@@ -1,0 +1,15 @@
+INSTALLATION FOR Perl::Review
+
+To install Perl::Review:
+
+  tar -zxf Perl-Review-0.01.tar.gz
+  cd Perl-Review-0.02
+  perl Makefile.PL
+  make
+  make test
+  make install 
+
+PREREQUISITES
+
+Perl::Review requires PPI.
+The tests require Test::More.

@@ -1,0 +1,269 @@
+#!/usr/bin/perl
+
+#   $Source: /cvs/asgus/tools/perlreview/bin/perlreview,v $
+# $Revision: 1.4 $
+#     $Date: 2005/08/26 00:58:42 $
+
+
+package main;
+
+use strict;
+use warnings;
+use English qw(-no_match_vars);
+use Perl::Review qw(perlreview);
+
+my $ret = eval { perlreview(@ARGV) };
+if ($EVAL_ERROR) { warn $EVAL_ERROR };
+exit( defined($ret) ? 0 : 1 );
+
+__END__
+
+
+=head1 NAME
+
+perlreview - Review Perl code for best practices.
+
+=head1 SYNOPSIS
+
+ perlreview file
+ perlreview      #Reads from STDIN
+
+=head1 DESCRIPTION
+
+C<perlreview> examines Perl code for violations against the guidelines in
+Damian Conways book B<"Perl Best Practices.">
+
+At the moment, it covers about 30 of the guidelines.  All will be
+briefly described here in the documentation as soon as I have time to
+write it.  For a more thorough explanation, C<perlreview> cites the
+page numbers in B<"Perl Best Practices"> that relate to each
+violation.
+
+=head1 ARGUMENTS
+
+The one and only argument is the name of your code file.
+
+=head1 OPTIONS
+
+No options are supported at this time.  Future versions may
+allow you to specify the minimum 'severity' of violations
+you want to know about.
+
+=head1 THE GUIDELINES
+
+The following is a brief explanation of the guidelines that
+C<perlreview> seeks to enforce.  For a more complete explanation, you
+should read B<"Perl Best Practices"> (PBB).
+
+=over 8
+
+=item Mixed-case subroutine name
+
+Conway's naming convention uses only lower-case words separated by
+underscores.  For well-known acronyms, you can still use upper-case
+letters, but it must still be separated by underscores.
+
+The following subroutine names are legal:
+
+ sub read_xml {}
+ sub read_XML {}
+ sub XML_reader {}
+
+These names are not legal:
+
+ sub readXML {}  
+ sub readXml {}
+
+=item Mixed-case variable names
+
+Ditto above, but with respect to variable names.
+
+=item Subroutine prototype used
+
+Subroutine prototypes often lead to mysterious behavior.  Don't
+use them unless you have a Damn Good Reason (DGR).
+
+=item Code before 'package' declaration
+
+This isn't specifically mention by Conway, but its something that I've
+come across in some places.  By putting code before the 'package'
+declaration, you're basically leaking all kinds of stuff into the
+caller's package, and you have no idea who's package that is.  Good
+encapsulation requires that you keep you innards to yourself.
+
+=item Variable declared as 'local'
+
+Since Perl 5 was released, there are very few reasons to ever use l'ocal'.
+If you must, make sure you have a DGR.  Mark-Jason Dominus did a nice
+article titled 'Seven Useful Uses of Local' in the Perl Journal.  Go
+read it before insisting on declaring a 'local' variable.
+
+=item Punctuation variable used
+
+Perl's vocabulary of magic variables are probably the main cause of
+its reputation as inscrutable line-noise.  The simple solution is to
+not use them.  Instead, just do this
+
+ use English qw(no_match_vars);
+
+so you can write things like C<$EVAL_ERROR> instead of C<$@>.
+However, The scratch variables C<$_> and C<@_> are pretty common,
+so C<perlreview> will not complain if you use them.
+
+
+=item Useless interpolation of literal string
+
+Don't use double quotes if your string doesn't need it.  This saves
+work for the interpreter and it let's the reader know that you really
+don't intend it to be interpolated.
+
+=item Literal string may require interpolation
+
+Conversely, this tells you if a literal string may need double-quotes.
+Things like unescaped '$' and '@' or '\n' are signs that you may have
+accidentally used single-quotes.
+
+=item Loop break without a label
+
+If you ever loop controls like C<next>, C<last>, or C<redo> its a good
+idea to use a line label.  That way the loop can be nested in the
+future without any troubles.
+
+=item Bad heredoc terminator
+
+Heredoc terminators must be quoted (single or double) and in ALL_CAPS.
+The quotes make it clear whether you intend to interpolate or not.
+
+=item Stricture is disabled
+
+This warning pops up if you ever say C<no strict>.  There are good reasons
+to disable certain types of strictures such as 'refs', but you better
+have a DGR.
+
+=item Warnings are disabled
+
+Ditto above, but with respect to warnings
+
+=item Backtick operator used
+
+Backticks are super convenient and Conway doesn't advise against them, but
+I find that they are sloppy and make a lot of noise.  You are better off
+using something like IPC::Open3 which lets you trap STDERR and STDOUT so
+your application's output doesn't fill up with a bunch of garbage.
+
+=item Reference to symbol in another package
+
+Conway advises against using package variables at all.  Since I haven't
+figured out how to find package variables where they are declared, this
+just lets you know when you've tried to reference one.  Consider creating
+a method or static subroutine to get & set the variable instead.
+
+=item String form of 'grep'
+
+For readability, use the block form of C<grep>
+
+ @matches = grep { $_ == 'foo' } @list;  #Use this one...
+ @matches = grep "$_ == 'foo'", @list;   #not this 
+
+=item String form of 'map'
+
+For readability, use the block form of C<map>
+
+ @plus_one = map { $_++ } @list;  #Use this one...
+ @plus_one = map "$_++", @list;   #not this 
+
+=item String form of 'eval'
+
+Using the string form of C<eval> can lead to weird run-time
+behavior.  Most of the time, the block form is the right choice.
+
+=item Postfix form of 'unless'
+
+Conway advises against using C<unless> because it tends to create
+double-negatives .  The postfix form is particularly awkward.  Just
+write:
+
+ if (! $whatever){ #Do something }
+
+=item Postfix form of 'until'
+
+Conway advises against using C<until> because it tends to create
+double-negatives .  The postfix form is particularly awkward.  Just
+write:
+
+ while (! $whatever){ #Do something }
+
+=item Use of 'require' pragma
+
+Since Perl 5, the C<require> pragma has been pretty much obsolete.
+Don't use C<require>, require C<use>.  Make sense?
+
+=item Code before stricture enabled
+
+Stricture should be enabled as soon as possible.  You can put it after
+any C<package>, C<use>, or C<require> statements, but it must come
+before any subroutine declarations or expressions.
+
+=item Code before warnings enabled
+
+Warnings should be enabled as soon as possible.  You can put it after
+any C<package>, C<use>, or C<require> statements, but it must come
+before any subroutine declarations or expressions.
+
+=item Multiple 'package' declarations per file
+
+Conway didn't mention this, but it just makes life easier.  If you
+have several subclasses in the same file and each one overrides the
+same methods then it gets much harder to find the right method in
+your editor.
+
+=item Literal number used in expression
+
+This one is tricky and may cause a lot of false-positives.  The intent
+is to use variables with meaningful names instead of mysterious numbers.
+For example,
+ 
+ my $pi = 3.14159;
+ my $area = $pi * $radius^2;
+
+is better than
+
+ my $area = 3.14159 * $radius^2;
+
+=item Noisy string is hard to read
+
+=item Bareword filehandle opened
+
+=item One-argument form of 'bless'
+
+=item Two-argument form of 'open'
+
+=back
+
+=head1 EXIT STATUS
+
+Returns 0 if there were no errors and your code does not violate any
+guidelines.
+
+Returns >0 if there was an error and/or your code violates one or more
+guidelines.
+
+=head1 NOTES
+
+If your code does not compile, perlreview may not be able to parse it
+either.  I suggest resolving all your compile-time errors before
+running C<perlreview>.
+
+=head1 SEE ALSO
+
+C<perltidy> is another excellent tool for improving your Perl code.
+
+=head1 AUTHOR
+
+Jeffrey R. Thalhammer
+
+
+
+
+
+

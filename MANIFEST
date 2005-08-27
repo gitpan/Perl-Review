@@ -1,0 +1,6 @@
+INSTALL
+README
+Makefile.PL
+bin/perlreview
+lib/Perl/Review.pm
+t/test.t
