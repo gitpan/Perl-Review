@@ -13,5 +13,6 @@ WriteMakefile( NAME           => 'Perl::Review',
 				  'List::Util' => 0,
 				  'Pod::Usage' => 0,
                                   'Test::More' => 0,
+				  'FindBin' => 0,
 			      }
 );

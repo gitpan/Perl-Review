@@ -73,7 +73,7 @@ __END__
 
 =head1 NAME
 
-perlreview - Critique Perl souce code
+perlreview - Command-line interface to critique Perl souce code
 
 =head1 SYNOPSIS
 
@@ -276,6 +276,13 @@ and the output will appear in a separate buffer.  My E-Lisp skills are
 pretty weak, so I'd appreciate any tips for improvement on this.
 Also, C<vi> fans are welcome to submit similar code and I'll publish
 it here.
+
+=head1 BUGS
+
+Scrutinizing Perl code is hard for humans, let alone machines.  If you
+find any bugs, particularly false-positives or false-negatives from
+a Perl::Review::Policy, please submit them to L<http://rt.cpan.org>.
+Thanks.
 
 =head1 AUTHOR
 

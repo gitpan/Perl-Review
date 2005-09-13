@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -32,7 +32,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::ControlStructures::ProhibitStringyEval
+Perl::Review::Policy::BuiltinFunctions::ProhibitStringyEval;
 
 =head1 DESCRIPTION
 
@@ -46,6 +46,7 @@ doesn't give compile-time warnings.
 =head1 SEE ALSO
 
 L<Perl::Review::Policy::ControlStrucutres::ProhibitStringyGrep>
+
 L<Perl::Review::Policy::ControlStrucutres::ProhibitStringyMap>
 
 =head1 AUTHOR

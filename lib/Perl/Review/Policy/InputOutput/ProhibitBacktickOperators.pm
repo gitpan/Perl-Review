@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::ControlStructures::ProhibitVoidContextMap
+Perl::Review::Policy::InputOutput::ProhibitBacktickOperators;
 
 =head1 DESCRIPTION
 
@@ -51,7 +51,8 @@ output and let the application decide what to do with it.
 
 =head1 NOTES
 
-This policy prohibits the generalized form of backticks as C<qx{}>.
+This policy also prohibits the generalized form of backticks seen as
+C<qx{}>.
 
 =head1 AUTHOR
 

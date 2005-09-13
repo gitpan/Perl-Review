@@ -7,7 +7,7 @@ use English qw(-no_match_vars);
 use File::Spec::Functions qw(catfile);
 
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub new {
 

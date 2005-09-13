@@ -4,7 +4,10 @@ use strict;
 use warnings;
 use Pod::Usage;
 use Perl::Review::Utils;
-use overload '""' => 'to_string';
+use overload q{""} => 'to_string';
+
+use vars qw($VERSION);
+$VERSION = '0.03';
 
 sub new {
 

@@ -9,7 +9,7 @@ use Carp;
 use PPI;
 
 use vars qw($VERSION);
-$VERSION   = '0.02';
+$VERSION   = '0.03';
 
 #----------------------------------------------------------------------------
 #
@@ -316,9 +316,16 @@ L<Perl::Review::Policy::Variables::ProhibitPackageVars>
 
 L<Perl::Review::Policy::Variables::ProhibitPunctuationVars>
 
+=head1 BUGS
+
+Scrutinizing Perl code is hard for humans, let alone machines.  If you
+find any bugs, particularly false-positives or false-negatives from a
+Perl::Review::Policy, please submit them to L<http://rt.cpan.org>.
+Thanks.
+
 =head1 CREDITS
 
-Adam Kennedy - For creating L<PPI>
+Adam Kennedy - For creating L<PPI>, the heart and soul of Perl::Review.
 
 Damian Conway - For writing B<Perl Best Practices>
 

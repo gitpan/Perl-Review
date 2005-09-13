@@ -4,36 +4,35 @@ use FindBin '$Bin';
 use lib "$Bin/../lib";
 use Test::More qw(no_plan);
 
-#-----------------------------------------------------
-#Test modules for compilation, methods and inheritance
+#---------------------------------------------------------------
+# Test policy modules for compilation, methods and inheritance
 
 my @policy_modules = 
 qw(BuiltinFunctions::ProhibitStringyEval
-   BuiltinFunctions::ProhibitStringyGrep	       
-   BuiltinFunctions::ProhibitStringyMap                    		       
-   CodeLayout::RequireTidyCode                                   
-   ControlStructures::ProhibitPostfixControls              		       
-   InputOutput::ProhibitBacktickOperators                        
-   Modules::ProhibitMultiplePackages                              
-   Modules::ProhibitRequireStatements                      		       
-   Modules::ProhibitSpecificModules                               
-   Modules::ProhibitUnpackagedCode                         	       
-   NamingConventions::ProhibitMixedCaseSubs                	       
-   NamingConventions::ProhibitMixedCaseVars                       
-   Subroutines::ProhibitSubroutinePrototypes               	       
+   BuiltinFunctions::ProhibitStringyGrep
+   BuiltinFunctions::ProhibitStringyMap 
+   CodeLayout::RequireTidyCode 
+   ControlStructures::ProhibitPostfixControls
+   InputOutput::ProhibitBacktickOperators
+   Modules::ProhibitMultiplePackages
+   Modules::ProhibitRequireStatements 
+   Modules::ProhibitSpecificModules
+   Modules::ProhibitUnpackagedCode
+   NamingConventions::ProhibitMixedCaseSubs
+   NamingConventions::ProhibitMixedCaseVars
+   Subroutines::ProhibitSubroutinePrototypes
    TestingAndDebugging::RequirePackageStricture                       
-   TestingAndDebugging::RequirePackageWarnings             
-   ValuesAndExpressions::ProhibitConstantPragma                 
-   ValuesAndExpressions::ProhibitEmptyQuotes                   
-   ValuesAndExpressions::ProhibitInterpolationOfLiterals         
-   ValuesAndExpressions::ProhibitNoisyQuotes               
-   ValuesAndExpressions::RequireInterpolationOfMetachars     
-   ValuesAndExpressions::RequireQuotedHeredocTerminator    
+   TestingAndDebugging::RequirePackageWarnings
+   ValuesAndExpressions::ProhibitConstantPragma 
+   ValuesAndExpressions::ProhibitEmptyQuotes
+   ValuesAndExpressions::ProhibitInterpolationOfLiterals 
+   ValuesAndExpressions::ProhibitNoisyQuotes
+   ValuesAndExpressions::RequireInterpolationOfMetachars
+   ValuesAndExpressions::RequireQuotedHeredocTerminator  
    ValuesAndExpressions::RequireUpperCaseHeredocTerminator 
-   Variables::ProhibitLocalVars                                   
-   Variables::ProhibitPackageVars                          
-   Variables::ProhibitPunctuationVars		           	       
-   Variables::RequireLocalizedGlobalVars
+   Variables::ProhibitLocalVars
+   Variables::ProhibitPackageVars 
+   Variables::ProhibitPunctuationVars
 );
 
 for my $mod (@policy_modules) {
@@ -50,6 +49,9 @@ for my $mod (@policy_modules) {
     my $obj = $mod->new();
     isa_ok($obj, 'Perl::Review::Policy');
 }
+
+#---------------------------------------------------------------
+# Test main modules for compilation, construction
 
 my @main_modules =
 qw(Review
@@ -68,7 +70,7 @@ for my $mod (@main_modules) {
     can_ok($mod, 'new');
 }
 
-#-------------------------------------
+#---------------------------------------------------------------
 # Test other methods
 can_ok('Perl::Review', 'add_policy');
 can_ok('Perl::Review::Violation', 'location');

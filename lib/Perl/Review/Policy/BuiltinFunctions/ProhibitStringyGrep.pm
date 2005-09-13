@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -32,7 +32,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::ControlStructures::ProhibitStringyGrep
+Perl::Review::Policy::BuiltinFunctions::ProhibitStringyGrep;
 
 =head1 DESCRIPTION
 
@@ -49,6 +49,7 @@ Use the block forms instead.
 =head1 SEE ALSO
 
 L<Perl::Review::Policy::ControlStrucutres::ProhibitStringyEval>
+
 L<Perl::Review::Policy::ControlStrucutres::ProhibitStringyMap>
 
 =head1 AUTHOR

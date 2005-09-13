@@ -7,7 +7,7 @@ use List::Util qw(first);
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub violations{
     my ($self, $doc) = @_;
@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::TestingAndDebugging::RequirePackageStricture
+Perl::Review::Policy::TestingAndDebugging::RequirePackageWarnings;
 
 =head1 DESCRIPTION
 
