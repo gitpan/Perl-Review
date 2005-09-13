@@ -1,0 +1,21 @@
+[0.01]
+
+Initial version.
+Released on 050816.
+
+[0.02]
+
+Major overhaul based on feedback from Perl community.
+
+Factored coding standards into separate modules (known as Policies).
+The idea here is to allow other developers to easily contribute
+additional coding standards.
+
+Reworked Perl::Review into a simple engine for loading and running
+Policy modules.
+
+Gave perlreview a command-line interface and configuration file
+for selecting which Policy modules to use.
+
+Released on 050913
+

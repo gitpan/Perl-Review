@@ -1,13 +1,17 @@
-#   $Source: /cvs/asgus/tools/perlreview/lib/Perl/Review.pm,v $
-# $Revision: 1.6 $
-#     $Date: 2005/08/27 00:42:48 $
 
 use ExtUtils::MakeMaker;
 
-WriteMakefile( NAME      => 'Perl::Review',
-	       AUTHOR    => 'Jeffrey Thalhammer <thaljef@cpan.org>',
-	       ABSTRACT  => 'Critique Perl source code.',
-	       PREREQ_PM => {'PPI' => '1.0'},
-	       VERSION   => '0.1',
-	       EXE_FILES => ['bin/perlreview']);
-
+WriteMakefile( NAME           => 'Perl::Review',
+	       AUTHOR         => 'Jeffrey Thalhammer <thaljef@cpan.org>',
+	       ABSTRACT_FROM  => 'lib/Perl/Review.pm',
+	       VERSION_FROM   => 'lib/Perl/Review.pm',
+	       EXE_FILES      => ['bin/perlreview'],
+	       PREREQ_PM      => {'PPI' => '+1.0',
+				  'Config::Std' => '0',
+				  'File::Spec::Functions' => '0',
+				  'List::MoreUtils' => 0,
+				  'List::Util' => 0,
+				  'Pod::Usage' => 0,
+                                  'Test::More' => 0,
+			      }
+);
