@@ -8,7 +8,7 @@ use List::MoreUtils qw(any);
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -63,8 +63,6 @@ for a workaround.
 =head1 SEE ALSO
 
 L<Perl::Review::Policy::Variables::ProhibitPunctuationVars>
-L<Perl::Review::Policy::Variables::ProhibitScratchModification>
-L<Perl::Review::Policy::Variables::RequireLocalizedGlobalVars>
 
 =head1 AUTHOR
 

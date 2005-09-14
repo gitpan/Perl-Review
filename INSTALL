@@ -1,6 +1,6 @@
 ######################################################################
 #                            Perl::Review                            #
-#                            Version 0.03                            #
+#                            Version 0.04                            #
 #                       by Jeffrey R. Thalhammer                     #
 #                          <thaljef@cpan.org>                        #
 ######################################################################
@@ -10,8 +10,8 @@ INSTALLATION
   To install Perl::Review, give the following commands to your 
   favorite shell:
 
-  tar -zxf Perl-Review-0.03.tar.gz
-  cd Perl-Review-0.03
+  tar -zxf Perl-Review-0.04.tar.gz
+  cd Perl-Review-0.04
   perl Makefile.PL
   make
   make test

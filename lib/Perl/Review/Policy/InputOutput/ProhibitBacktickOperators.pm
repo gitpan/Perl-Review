@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::InputOutput::ProhibitBacktickOperators;
+Perl::Review::Policy::InputOutput::ProhibitBacktickOperators
 
 =head1 DESCRIPTION
 

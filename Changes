@@ -20,3 +20,8 @@ for selecting which Policy modules to use.
 [0.03] Released on 050913.
 
 Fixed POD.  Removed test case for missing policy module.
+
+[0.04] Released on 050914
+
+Version 0.03 was a bust because I uploaded the wrong tarball to PAUSE.
+

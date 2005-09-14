@@ -7,7 +7,7 @@ use English qw(-no_match_vars);
 use File::Spec::Functions qw(catfile);
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub new {
 
@@ -24,7 +24,7 @@ sub new {
     if ( ref $profile eq 'HASH' ) {
         %user_config = %{$profile};
     }
-    elsif ( length $profile ) {
+    elsif ( defined $profile && length $profile ) {
         read_config( $profile => %user_config );
     }
 

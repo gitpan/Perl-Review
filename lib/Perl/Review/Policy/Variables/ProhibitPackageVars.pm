@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -66,7 +66,8 @@ reference to variable with a fully-qualified package name.
 =head1 SEE ALSO
 
 L<Perl::Review::Policy::Variables::ProhibitPunctuationVars>
-L<Perl::Review::Policy::Variables::ProhibitScratchModification>
+
+L<Perl::Review::Policy::Variables::ProhibitLocalVars>
 
 =head1 AUTHOR
 

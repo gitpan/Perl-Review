@@ -9,17 +9,17 @@ use Carp;
 use PPI;
 
 use vars qw($VERSION);
-$VERSION   = '0.03';
+$VERSION   = '0.04';
 
 #----------------------------------------------------------------------------
 #
 sub new {
 
-    my ($class, %opts) = @_;
+    my ($class, %args) = @_;
 
     # Default arguments
-    my $priority = defined $opts{-priority} ? $opts{-priority} : 0;
-    my $profile  = $opts{-profile};
+    my $priority = defined $args{-priority} ? $args{-priority} : 0;
+    my $profile_path = $args{-profile};
 
     # Create object
     my $self = bless {}, $class;
@@ -27,19 +27,19 @@ sub new {
 
     # Allow all configuration to be skipped. This
     # is useful for testing an isolated policy.
-    return $self if defined $profile && $profile eq 'NONE';
+    return $self if defined $profile_path && $profile_path eq 'NONE';
 
-    # Read configuration
-    my $config  = Perl::Review::Config->new(-profile => $profile);
+    # Read profile
+    my $profile = Perl::Review::Config->new(-profile => $profile_path);
 
-    # Now apply policy configuration
-    while( my ($policy, $args) = each %{$config} ){
+    # Now load policy w/ its config
+    while( my ($policy, $config) = each %{$profile} ){
 	next if ! $policy;                     #Skip default section
-	$args = {} if ! defined $args;         #Protect against undefined config
-	my $p = delete $args->{priority};      #Remove 'priority' from config
+	$config = {} if ! defined $config;     #Protect against undef config
+	my $p = delete $config->{priority};    #Remove 'priority' from config
 	$p = 1 if ! defined $p;                #Default the priority
 	next if $priority && ($p > $priority); #Skip 'low' priority policies
-	$self->add_policy($policy, %{$args});  #Add policy with remaining config
+	$self->add_policy( -policy => $policy, -config => $config ); 
     }
     return $self;
 }
@@ -48,24 +48,24 @@ sub new {
 #
 sub add_policy {
 
-    my ($self, $module_name, %args) = @_;
-    
-    return if ! $module_name;
+    my ($self, %args) = @_;
+    my $module_name = $args{-policy} || return;
+    my $config = $args{-config} || {};
 
     #Qualify name if full module name not given
     my $namespace = 'Perl::Review::Policy';
-    $module_name = $namespace . '::' . $module_name
+    $module_name = $namespace . q{::} . $module_name
 	if $module_name !~ m{ \A $namespace }x;
 
     #Convert module name to file path.  I'm trying to do
     #this in a portable way, but I'm not sure it actually is.
-    my $module_file = catfile( split '::', $module_name );
+    my $module_file = catfile( split q{::}, $module_name );
     $module_file .= '.pm';
 
     #Try to load module and instantiate
     eval {
 	require $module_file;
-	my $policy = $module_name->new(%args);
+	my $policy = $module_name->new( %{$config} );
 	push @{$self->{_policies}}, $policy;
     };
 
@@ -83,13 +83,17 @@ sub add_policy {
 sub review_code {
     my ($self, $source_code) = @_;
 
-    #Parse the code
+    # Parse the code
     my $doc = PPI::Document->new($source_code) || croak q{Cannot parse code};
     $doc->index_locations();
 
-    #Apply policies and return violations
+    # Run engine and return violations
     return map { $_->violations($doc) } @{$self->{_policies}}; 
 }
+
+#----------------------------------------------------------------------------
+#
+sub policies { $_[0]->{_policies} }
 
 1;
 
@@ -131,27 +135,26 @@ documentation for L<perlreview>.
 
 =over 8
 
-=item new( -profile => $FILE, -priority => $N )
+=item new( [ -profile => $FILE, -priority => $N ] )
 
 Returns a reference to a Perl::Review object.  All arguments are
 optional key-value pairs.
 
 B<-profile> is the path to a configuration file that dictates which
-policies should be loaded and how to configure each one. If the
-C<$FILE> is not defined, Perl::Review attempts to find a
-configuration file in several places.  If a configuration file can't
-be found, or if C<$FILE> is empty string, then Perl::Review reverts
-to its factory setup and all Policy modules that are distributed with
-C<Perl::Review> will be loaded.  See L<"CONFIGURATION"> for more
-information.
+policies should be loaded into the Perl::Review engine and how to
+configure each one. If C<$FILE> is not defined, Perl::Review attempts
+to find a F<.perlreviewrc> configuration file in several places.  If a
+configuration file can't be found, or if C<$FILE> is an empty string,
+then Perl::Review reverts to its factory setup and all Policy modules
+that are distributed with C<Perl::Review> will be loaded.  See
+L<"CONFIGURATION"> for more information.
 
 B<-priority> is the maximum priority value of Policies that should be
-loaded from the configuration file. 1 is the "highest" priority, and
-all numbers larger than 1 have "lower" priority.  Only Policies that
-have been configured with a priority value less than or equal to
-C<$N> will not be applied.  For a given C<-profile>, increasing
-C<$N> will result in more violations.  See L<"CONFIGURATION"> for more
-information.
+loaded. 1 is the "highest" priority, and all numbers larger than 1
+have "lower" priority.  Only Policies that have been configured with a
+priority value less than or equal to C<$N> will not be loaded into the
+engine.  For a given C<-profile>, increasing C<$N> will result in more
+violations.  See L<"CONFIGURATION"> for more information.
 
 =back
 
@@ -159,27 +162,34 @@ information.
 
 =over 8
 
-=item add_policy( $module_name, %args )
+=item add_policy( -policy => $STRING [, -config => \%HASH ] )
 
-Registers a policy with this Review engine.  The policy name should be
-a string that matches the name of a L<Perl::Review::Policy> subclass
+Loads a Policy into this Review engine.  The engine will attmept to
+C<require> the module named by $STRING and instantiate it. If the
+module fails to load or cannot be instantiated, it will throw a
+warning and return a false value.  Otherwise, it returns a reference
+to this Review engine.
+
+B<-policy> is the name of a L<Perl::Review::Policy> subclass
 module.  The C<'Perl::Review::Policy'> portion of the name can be
-omitted for brevity.  The engine will attmept to load the module and
-instantiate the subclass, passing C<%args> to the constructor.  See
-the documentation for the relevant Policy module for a description of
-the arguments it supports.
+omitted for brevity.  This argument is required.
 
-If it the module fails to load or cannot be instantiated, it will
-throw a warning and return a false value.  Otherwise, it returns a
-reference to this Review engine.
+B<-config> is an optional reference to a hash of Policy configuration
+parameters. The contents of this hash reference will be passed into to
+the constructor of the Policy module.  See the documentation in the
+relevant Policy module for a description of the arguments it supports.
 
-=item review_code( $source_code || $filename )
 
-Runs the C<$source_code> (as SCALAR ref) or C<$filename> through the
-Perl::Review engine using all the policies that have been registered
-with this engine.  Returns a list of L<Perl::Review::Violation>
-objects for each violation of the registered policies.  If there are
-no violations, returns an empty list.
+
+=item review_code( $source_code )
+
+Runs the C<$source_code> through the Perl::Review engine using all the
+policies that have been loaded into this engine.  If C<$source_code>
+is a scalar reference, then it is treated as string of actual Perl
+code.  Otherwise, it is treated as a path to a file of Perl code..
+Returns a list of L<Perl::Review::Violation> objects for each
+violation of the loaded Policies.  If there are no violations, returns
+an empty list.
 
 =back
 
@@ -189,31 +199,33 @@ The default configuration file is called F<.perlreviewrc> and it lives
 in your home directory.  If this file does not exist and the
 C<-profile> option is not given to the constructor, Perl::Review
 defaults to its factory setup, which means that all the policies that
-are distributed with Perl::Review will be applied.
+are distributed with Perl::Review will be loaded.  Alternatively, you
+can set the PERLREVIEW environment variable to explicitly point to a
+different configuration file in another location.
 
 The format of the configuration file is a series of named sections
-that contain key-value pairs separated by ':' or '='.  Comments
-should start with '#' and can be placed on a separate line or after
-the name-value pairing if you desire.  The general recipe is a series
-of sections like this:
+that contain key-value pairs separated by ':' or '='.  Comments should
+start with '#' and can be placed on a separate line or after the
+name-value pairing if you desire.  The general recipe is a series of
+sections like this:
 
-    [PolicyModuleName]
+    [PolicyName]
     priority = 1
     arg1 = value1
     arg2 = value2
 
-The C<PolicyModuleName> should be the name of module that implements
-the policy you want to use.  The module should be a subclass of
+C<PolicyName> is the name of a module that implements the policy you
+want to load into the engine.  The module must be a subclass of
 L<Perl::Review::Policy>.  For brevity, you can ommit the
 C<'Perl::Review::Policy'> part of the module name.
 
-The C<priority> should be the level of importance you wish to assign
-this policy.  1 is the "highest" priority level, and all numbers
-greater than 1 have increasingly "lower" priority.  Only those
-policies with a priority less than or equal to the C<priority> value
-given to the Perl::Review constructor will be applied.  The priority
-can be an arbitrarily large positive integer.  If the priority is not
-defined, it defaults to 1.
+C<priority> is the level of importance you wish to assign to this
+policy.  1 is the "highest" priority level, and all numbers greater
+than 1 have increasingly "lower" priority.  Only those policies with a
+priority less than or equal to the C<-priority> value given to the
+Perl::Review constructor will be loaded.  The priority can be an
+arbitrarily large positive integer.  If the priority is not defined,
+it defaults to 1.
 
 The remaining key-value pairs are configuration parameters for that
 specific Policy and will be passed into the constructor of the
@@ -223,17 +235,17 @@ reasonable defaults.  See the documentation on the appropriate Policy
 module for more details.
 
 By default, all the policies that are distributed with Perl::Review
-are applied.  Rather than assign priority levels to each one, you can
-simply "turn off" a Policy by appending a '-' to the name of the
+are loaded.  Rather than assign priority levels to each one, you can
+simply "turn off" a Policy by prepending a '-' to the name of the
 module in the config file.  In this manner, the Policy will never be
-applied, regardless of the C<-priority> given to the Perl::Review
+loaded, regardless of the C<-priority> given to the Perl::Review
 constructor.
 
 
 A simple configuration might look like this:
 
     #--------------------------------------------------------------
-    # These are really important, so always apply them
+    # These are really important, so always load them
 
     [RequirePackageStricture]
     priority = 1
@@ -242,7 +254,7 @@ A simple configuration might look like this:
     priority = 1
 
     #--------------------------------------------------------------
-    # These are less important, so only apply when asked
+    # These are less important, so only load when asked
 
     [ProhibitOneArgumentBless]
     priority = 2
@@ -251,7 +263,7 @@ A simple configuration might look like this:
     priority = 2
 
     #--------------------------------------------------------------
-    # I don't agree with these, so never apply them
+    # I don't agree with these, so never load them
 
     [-ProhibitMixedCaseVars]
     [-ProhibitMixedCaseSubs]

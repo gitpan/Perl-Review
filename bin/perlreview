@@ -83,9 +83,9 @@ perlreview - Command-line interface to critique Perl souce code
 =head1 DESCRIPTION
 
 C<perlreview> is the executable front-end to the L<Perl::Review>
-engine. The L<Perl::Review> distribution includes several policies
-based on the coding standards outlined in Damian Conway's book B<Perl
-Best Practices>.  I highly recommend that you get a copy!
+engine. The Perl::Review distribution includes several Policy modules
+that enforce the coding standards outlined in Damian Conway's book
+B<Perl Best Practices>.  I highly recommend that you get a copy!
 
 =head1 ARGUMENTS
 
@@ -104,12 +104,11 @@ option name by a space or '=' (a la L<Getopt::Long>).
 =item -priority N
 
 Sets the the maximum priority value of Policies that should be loaded
-from the configuration file. 1 is the "highest" priority, and all
-numbers larger than 1 have "lower" priority.  Only Policies that have
-been configured with a priority value less than or equal to N will not
-be applied.  For a given C<-profile>, increasing the priority value
-will result in more violations.  See L<"CONFIGURATION"> for more
-details.
+from. 1 is the "highest" priority, and all numbers larger than 1 have
+"lower" priority.  Only Policies that have been configured with a
+priority value less than or equal to N will not be applied.  For a
+given C<-profile>, increasing N will result in more violations.  See
+L<"CONFIGURATION"> for more information.
 
 =item -profile FILE
 
@@ -130,32 +129,32 @@ distributed with L<Perl::Review> will be loaded.
 =head1 CONFIGURATION
 
 The default configuration file is called F<.perlreviewrc> and it lives
-in your home directory.  If this file does not exist and the
-C<-profile> option is not given to the constructor, perlreview
-defaults to its factory setup, which means that all the policies that
-are distributed with L<Perl::Review> will be applied.
+in your home directory.  If this file does not exist or the
+C<-profile> option is given, perlreview defaults to its factory
+setup, which means that all the policies that are distributed with
+L<Perl::Review> will be loaded.
 
 The format of the configuration file is a series of named sections
-that contain key-value pairs separated by ':' or '='.  Comments
-should start with '#' and can be placed on a separate line or after
-the name-value pairing if you desire.  The general recipe is a series
-of sections like this:
+that contain key-value pairs separated by ':' or '='.  Comments should
+start with '#' and can be placed on a separate line or after the
+name-value pairing if you desire.  The general recipe is a series of
+sections like this:
 
-    [PolicyModuleName]
+    [PolicyName]
     priority = 1
     arg1 = value1
     arg2 = value2
 
-The C<PolicyModuleName> should be the name of module that implements
-the policy you want to use.  The module should be a subclass of
+C<PolicyName> is the name of a module that implements the policy you
+want to load into the engine.  The module must be a subclass of
 L<Perl::Review::Policy>.  For brevity, you can ommit the
 C<'Perl::Review::Policy'> part of the module name.
 
-The C<priority> should be the level of importance you wish to assign
-to the policy module.  1 is the highest priority level, and all
-numbers greater than 1 have increasingly lower priority.  Only those
-policies with a priority less than or equal to the C<-priority> value
-given on the command-line.  The priority can be an arbitrarily large
+C<priority> is the level of importance you wish to assign to this
+policy.  1 is the "highest" priority level, and all numbers greater
+than 1 have increasingly "lower" priority.  Only those policies with a
+priority less than or equal to the C<-priority> value given on the
+command-line will be loaded.  The priority can be an arbitrarily large
 positive integer.  If the priority is not defined, it defaults to 1.
 
 The remaining key-value pairs are configuration parameters for that
@@ -167,16 +166,16 @@ module for more details.
 
 By default, all the policies that are distributed with C<Perl::Review>
 are applied.  Rather than assign priority levels to each one, you can
-simply "turn off" a Policy by appending a '-' to the name of the
+simply "turn off" a Policy by prepending a '-' to the name of the
 module in the config file.  In this manner, the Policy will never be
-applied, regardless of the C<-priority> option given at the
+loaded, regardless of the C<-priority> option given at the
 command-line.
 
 
 A sample configuration might look like this:
 
     #--------------------------------------------------------------
-    # These are really important, so always apply them
+    # These are really important, so always load them
 
     [RequirePackageStricture]
     priority = 1
@@ -185,7 +184,7 @@ A sample configuration might look like this:
     priority = 1
 
     #--------------------------------------------------------------
-    # These are less important, so only apply when asked
+    # These are less important, so only load when asked
 
     [ProhibitOneArgumentBless]
     priority = 2
@@ -194,7 +193,7 @@ A sample configuration might look like this:
     priority = 2
 
     #--------------------------------------------------------------
-    # I don't agree with these, so never apply them
+    # I don't agree with these, so never load them
 
     [-ProhibitMixedCaseVars]
     [-ProhibitMixedCaseSubs]
@@ -283,6 +282,14 @@ Scrutinizing Perl code is hard for humans, let alone machines.  If you
 find any bugs, particularly false-positives or false-negatives from
 a Perl::Review::Policy, please submit them to L<http://rt.cpan.org>.
 Thanks.
+
+=head1 CREDITS
+
+Adam Kennedy - For creating L<PPI>, the heart and soul of Perl::Review.
+
+Damian Conway - For writing B<Perl Best Practices>
+
+Sharon, my wife - For putting up with my all-night code sessions
 
 =head1 AUTHOR
 

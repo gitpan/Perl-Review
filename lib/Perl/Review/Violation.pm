@@ -7,12 +7,12 @@ use Perl::Review::Utils;
 use overload q{""} => 'to_string';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub new {
 
     #Check arguments
-    my $msg = "Invalid usage of Perl::Review->new()";
+    my $msg = 'Invalid usage of Perl::Review->new()';
     pod2usage( -input => __FILE__, -message => $msg ) if @_ != 4;
     pod2usage( -input => __FILE__, -message => $msg )
       if ref( $_[3] ) ne 'ARRAY';

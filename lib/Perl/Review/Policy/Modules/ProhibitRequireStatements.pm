@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -29,7 +29,7 @@ Perl::Review::Policy::Modules::ProhibitRequireStatements
 
 =head1 DESCRIPTION
 
-Since Perl 5, c<require> statements are pretty much obsolete.  Use the
+Since Perl 5, C<require> statements are pretty much obsolete.  Use the
 C<use> pragma instead.
 
 =head1 AUTHOR

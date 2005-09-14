@@ -7,7 +7,7 @@ use Perl::Review;
 
 my $code = undef;
 my $policy = undef;
-my %args = ();
+my %config = ();
 
 #----------------------------------------------------------------
 
@@ -63,8 +63,8 @@ do_something() for @list;
 END_PERL
 
 $policy = 'ControlStructures::ProhibitPostfixControls';
-%args = (allow => 'if while until unless for');
-is( review($policy, \$code, %args), 0, $policy);
+%config = (allow => 'if while until unless for');
+is( review($policy, \$code, \%config), 0, $policy);
 
 #----------------------------------------------------------------
 
@@ -164,8 +164,8 @@ use Super::Evil::Module;
 END_PERL
 
 $policy = 'Modules::ProhibitSpecificModules';
-%args = (modules => 'Evil::Module Super::Evil::Module');
-is( review($policy, \$code, %args), 2, $policy);
+%config = (modules => 'Evil::Module Super::Evil::Module');
+is( review($policy, \$code, \%config), 2, $policy);
 
 #----------------------------------------------------------------
 
@@ -174,8 +174,8 @@ use Good::Module;
 END_PERL
 
 $policy = 'Modules::ProhibitSpecificModules';
-%args = (modules => 'Evil::Module Super::Evil::Module');
-is( review($policy, \$code, %args), 0, $policy);
+%config = (modules => 'Evil::Module Super::Evil::Module');
+is( review($policy, \$code, \%config), 0, $policy);
 
 #----------------------------------------------------------------
 
@@ -584,8 +584,8 @@ is( review($policy, \$code), 0, $policy);
 
 #----------------------------------------------------------------
 sub review {
-    my($policy, $code_ref, %args) = @_;
+    my($policy, $code_ref, $config_ref) = @_;
     my $r = Perl::Review->new( -profile => 'NONE' );
-    $r->add_policy($policy, %args);
+    $r->add_policy(-policy => $policy, -config => $config_ref);
     return scalar $r->review_code($code_ref);
 }

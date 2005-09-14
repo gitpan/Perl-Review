@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -32,7 +32,7 @@ __END__
 
 =head1 NAME
 
-Perl::Review::Policy::BuiltinFunctions::ProhibitStringyEval;
+Perl::Review::Policy::BuiltinFunctions::ProhibitStringyEval
 
 =head1 DESCRIPTION
 

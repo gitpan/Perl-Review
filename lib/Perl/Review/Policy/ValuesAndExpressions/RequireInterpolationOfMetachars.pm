@@ -7,7 +7,7 @@ use Perl::Review::Violation;
 use base 'Perl::Review::Policy';
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub violations {
     my ($self, $doc) = @_;
@@ -51,7 +51,7 @@ the string should be interpolated.
 
 =head1 NOTES
 
-Perl's own c<warnings> pragma also warns you about this.
+Perl's own C<warnings> pragma also warns you about this.
 
 =head1 SEE ALSO 
 
