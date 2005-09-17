@@ -1,27 +1,33 @@
 [0.01] Released on 050816.
 
-Initial version.
-
+	Initial version.
 
 [0.02] Released on 050913.
 
-Major overhaul based on feedback from Perl community.
+	Major overhaul based on feedback from Perl community.
 
-Factored coding standards into separate modules (known as Policies).
-The idea here is to allow other developers to easily contribute
-additional coding standards.
+	Factored coding standards into separate modules (known as
+	Policies).  The idea here is to allow other developers to easily
+	contribute additional coding standards.
 
-Reworked Perl::Review into a simple engine for loading and running
-Policy modules.
+	Reworked Perl::Critic into a simple engine for loading and running
+	Policy modules.
 
-Gave perlreview a command-line interface and configuration file
-for selecting which Policy modules to use.
+	Gave perlreview a command-line interface and configuration file
+	for selecting which Policy modules to use.
 
 [0.03] Released on 050913.
 
-Fixed POD.  Removed test case for missing policy module.
+	Fixed POD.  Removed test case for missing policy module.
 
 [0.04] Released on 050914
 
-Version 0.03 was a bust because I uploaded the wrong tarball to PAUSE.
+	Version 0.03 was a bust because I uploaded the wrong tarball to PAUSE.
+
+[0.05] Released on 050917
+
+	End of 'Perl::Review' releases.  I have changed the name to
+	'Perl::Critic' to avoid possible confusion with "The Perl Review"
+	magazine.  Plese search for 'Perl::Critic' on CPAN to find
+	future releases.
 
